@@ -17,6 +17,10 @@ tables**. Don't run this scraper on a production database.
 
     $ mysql -h HOSTNAME -u USER -p PASSWORD DB_NAME < tables.sql
 
+If you've configured as per above, save yourself some typing:
+
+    $ mysql -u"$Q_SCRAPER_DATABASE_USER" -p"$Q_SCRAPER_DATABASE_PASSWORD" -h"$Q_SCRAPER_DATABASE_HOST" q < tables.sql
+
 #### import courses
 
 Run `import_courses.php` to import courses, faculty, and academic fields from
