@@ -1,8 +1,7 @@
-#!/usr/bin/php
-<?
+<?php
+    require 'config.php';
 
-    mysql_connect("localhost", "", "");
-    mysql_select_db("apps_q");
+    db_connect();
 
     ini_set("display_errors", TRUE);
 
@@ -10,14 +9,7 @@
     $PAGES = dirname(__FILE__) . "/pages";
 
     // tables involved in import
-    $TABLES = array("courses", "instructors", "comments");
-
-    // create temporary tables
-    foreach ($TABLES as $table)
-    {
-        mysql_query("DROP TABLE `{$table}_NEW`");
-        mysql_query("CREATE TABLE `{$table}_NEW` LIKE `$table`");
-    }
+    $TABLES = array("Qcourses", "Qinstructors", "Qcomments");
 
     // iterate over years (note that Q interprets year n as Fall n plus Spring n+1)
     foreach (array("2012", "2011", "2010", "2009", "2008", "2007", "2006") as $year)
@@ -136,7 +128,7 @@
                     echo "WouldYouRecommend: $WouldYouRecommend\n";
 
                     // find catalog number
-                    $sql = sprintf("SELECT cat_num FROM courses WHERE number = '%s' GROUP BY number, cat_num",
+                    $sql = sprintf("SELECT cat_num FROM courses WHERE CONCAT(field, ' ', number) = '%s' GROUP BY number, cat_num",
                      mysql_real_escape_string($number));
                     $result = mysql_query($sql);
                     if (mysql_num_rows($result) == 1)
@@ -162,7 +154,7 @@
                     }
 
                     // INSERT
-                    $sql = sprintf("INSERT INTO Qcourses_NEW (course_id, number, cat_num, year, term, enrollment, evaluations, response_rate, course_overall, materials, assignments, feedback, section, workload, difficulty, would_you_recommend) " .
+                    $sql = sprintf("INSERT INTO Qcourses (course_id, number, cat_num, year, term, enrollment, evaluations, response_rate, course_overall, materials, assignments, feedback, section, workload, difficulty, would_you_recommend) " .
                      "VALUES('%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                      mysql_real_escape_string($course_id),
                      mysql_real_escape_string($number),
@@ -181,7 +173,7 @@
                      ($Difficulty) ? "'" . mysql_real_escape_string($Difficulty) . "'" : "NULL",
                      ($WouldYouRecommend) ? "'" . mysql_real_escape_string($WouldYouRecommend) . "'" : "NULL");
                     if (!mysql_query($sql))
-                        echo "ERROR: $sql\n";
+                        echo "ERROR: " . mysql_error();
 
                     // What would you like to tell future students about this class?
                     $path = "view_comments.html?course_id={$course_id}&qid=1487&sect_num=";
@@ -199,7 +191,7 @@
                             {
                                 if ($node = trim($node))
                                 {
-                                    $sql = sprintf("INSERT INTO Qcomments_NEW (number, cat_num, year, term, comment) VALUES('%s', '%s', '%s', '%s', '%s')",
+                                    $sql = sprintf("INSERT INTO Qcomments (number, cat_num, year, term, comment) VALUES('%s', '%s', '%s', '%s', '%s')",
                                      mysql_real_escape_string($number),
                                      mysql_real_escape_string($cat_num),
                                      mysql_real_escape_string($year),
@@ -278,7 +270,7 @@
                                     continue;
 
                                 // INSERT
-                                $sql = sprintf("INSERT INTO Qinstructors_NEW (number, cat_num, year, term, id, first, last, InstructorOverall, EffectiveLecturesorPresentations, AccessibleOutsideClass, GeneratesEnthusiasm, FacilitatesDiscussionEncouragesParticipation, GivesUsefulFeedback, ReturnsAssignmentsinTimelyFashion) " . 
+                                $sql = sprintf("INSERT INTO Qinstructors (number, cat_num, year, term, id, first, last, instructor_overall, effective_lectures_or_presentations, accessible_outside_class, generates_enthusiasm, facilitates_discussion_encourages_participation, gives_useful_feedback, returns_assignments_in_timely_fashion) " . 
                                  "VALUES('%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s, %s, %s)",
                                  mysql_real_escape_string($number),
                                  mysql_real_escape_string($cat_num),
@@ -295,28 +287,13 @@
                                  ($GivesUsefulFeedback) ? "'" . mysql_real_escape_string($GivesUsefulFeedback) . "'" : "NULL",
                                  ($ReturnsAssignmentsinTimelyFashion) ? "'" . mysql_real_escape_string($ReturnsAssignmentsinTimelyFashion) . "'" : "NULL");
                                 if (!mysql_query($sql))
-                                    echo "ERROR: $sql\n";
+                                    echo "ERROR: " . mysql_error();
                             }
                         }
                     }
                 }
             }
         }
-    }
-
-    // install new tables
-    $pairs = array();
-    foreach ($TABLES as $table)
-    {
-        $pairs[] = "`$table` TO `{$table}_OLD`";
-        $pairs[] = "`{$table}_NEW` TO `$table`";
-    }
-    if (!mysql_query("RENAME TABLE " . join(", ", $pairs)))
-        print("ERROR: " . mysql_error());
-    foreach ($TABLES as $table)
-    {
-        if (!mysql_query("DROP TABLE `{$table}_OLD`"))
-            print("ERROR: " . mysql_error());
     }
 
 ?>

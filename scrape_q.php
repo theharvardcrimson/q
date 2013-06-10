@@ -1,4 +1,4 @@
-<?
+<?php
 
     // MUST BE RUN ON MY OWN MACHINE IF COOKIE IS FROM
     // MY OWN MACHINE, PRESUMABLY BECAUSE PIN COOKIE IS
@@ -22,9 +22,9 @@
 
     // years,terms to scrape
     // e.g., 2010,1 == Fall 2010; 2010,2 == Spring 2011
-    foreach (array("2012") as $year)
+    foreach (array("2012", "2011", "2010", "2009", "2008", "2007", "2006") as $year)
     {
-        foreach (array("1") as $term)
+        foreach (array("1", "2") as $term)
         {
             echo "$year $term...\n";
 
