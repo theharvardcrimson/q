@@ -1,21 +1,29 @@
 DROP TABLE IF EXISTS `courses`;
 
 CREATE TABLE `courses` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `cat_num` varchar(255) DEFAULT NULL,
+  `cat_num` varchar(255) NOT NULL,
   `term` varchar(255) DEFAULT NULL,
   `bracketed` tinyint(1) DEFAULT NULL,
   `field` varchar(255) DEFAULT NULL,
   `number` varchar(255) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
-  `faculty` varchar(255) DEFAULT NULL,
   `description` text,
   `prerequisites` text,
   `notes` text,
-  `meetings` varchar(255) DEFAULT NULL,
-  `building` varchar(255) DEFAULT NULL,
-  `room` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`cat_num`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table courses_faculty
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `courses_faculty`;
+
+CREATE TABLE `courses_faculty` (
+  `cat_num` varchar(255) NOT NULL,
+  `faculty_id` varchar(255) NOT NULL,
+  PRIMARY KEY (`cat_num`, `faculty_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -44,8 +52,8 @@ DROP TABLE IF EXISTS `fields`;
 CREATE TABLE `fields` (
   `id` varchar(255) NOT NULL DEFAULT '',
   `name` varchar(255) DEFAULT NULL,
-  `unique_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`unique_id`)
+  `type` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
