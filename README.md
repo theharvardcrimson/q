@@ -19,7 +19,7 @@ tables**. Don't run this scraper on a production database.
 
 If you've configured as per above, save yourself some typing:
 
-    $ mysql -u"$Q_SCRAPER_DATABASE_USER" -p"$Q_SCRAPER_DATABASE_PASSWORD" -h"$Q_SCRAPER_DATABASE_HOST" q < tables.sql
+    $ mysql -u"$Q_SCRAPER_DATABASE_USER" -p"$Q_SCRAPER_DATABASE_PASSWORD" -h"$Q_SCRAPER_DATABASE_HOST" "$Q_SCRAPER_DATABASE_NAME" < tables.sql
 
 #### import courses
 
